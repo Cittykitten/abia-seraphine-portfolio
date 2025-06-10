@@ -113,3 +113,88 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
+
+
+
+
+// Add this code to your existing script.js file, preferably at the end of the DOMContentLoaded event listener
+
+// Lightbox Modal
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const captionText = document.getElementById("caption");
+const closeBtn = document.querySelector(".close");
+const prevBtn = document.querySelector(".prev");
+const nextBtn = document.querySelector(".next");
+
+// Get all portfolio items
+const portfolioItems = document.querySelectorAll(".portfolio-item");
+let currentImageIndex = 0;
+const portfolioImages = Array.from(portfolioItems);
+
+// Open modal when clicking on a portfolio image
+portfolioItems.forEach((item, index) => {
+    const img = item.querySelector("img");
+    img.addEventListener("click", () => {
+        modal.classList.add("show");
+        modalImg.src = img.src;
+        captionText.innerHTML = item.querySelector(".portfolio-overlay h3").textContent + 
+                              " - " + 
+                              item.querySelector(".portfolio-overlay p").textContent;
+        document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+        currentImageIndex = index;
+    });
+});
+
+// Close modal
+closeBtn.addEventListener("click", () => {
+    modal.classList.remove("show");
+    document.body.style.overflow = "auto";
+});
+
+// Close when clicking outside the image
+modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+        modal.classList.remove("show");
+        document.body.style.overflow = "auto";
+    }
+});
+
+// Navigation between images
+prevBtn.addEventListener("click", () => {
+    currentImageIndex = (currentImageIndex - 1 + portfolioImages.length) % portfolioImages.length;
+    updateModalImage();
+});
+
+nextBtn.addEventListener("click", () => {
+    currentImageIndex = (currentImageIndex + 1) % portfolioImages.length;
+    updateModalImage();
+});
+
+// Keyboard navigation
+document.addEventListener("keydown", (e) => {
+    if (modal.classList.contains("show")) {
+        if (e.key === "ArrowLeft") {
+            currentImageIndex = (currentImageIndex - 1 + portfolioImages.length) % portfolioImages.length;
+            updateModalImage();
+        } else if (e.key === "ArrowRight") {
+            currentImageIndex = (currentImageIndex + 1) % portfolioImages.length;
+            updateModalImage();
+        } else if (e.key === "Escape") {
+            modal.classList.remove("show");
+            document.body.style.overflow = "auto";
+        }
+    }
+});
+
+function updateModalImage() {
+    const img = portfolioImages[currentImageIndex].querySelector("img");
+    modalImg.src = img.src;
+    captionText.innerHTML = portfolioImages[currentImageIndex].querySelector(".portfolio-overlay h3").textContent + 
+                          " - " + 
+                          portfolioImages[currentImageIndex].querySelector(".portfolio-overlay p").textContent;
+}
+
