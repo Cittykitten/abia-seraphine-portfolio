@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+   // document.addEventListener('DOMContentLoaded', function() {
     // ... (keep all your existing code until the lightbox section)
 
     // ===== Enhanced Lightbox Modal Functionality =====
