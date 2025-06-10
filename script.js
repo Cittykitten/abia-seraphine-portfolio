@@ -113,7 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== Lightbox Modal Functionality =====
+    document.addEventListener('DOMContentLoaded', function() {
+    // ... (keep all your existing code until the lightbox section)
+
+    // ===== Enhanced Lightbox Modal Functionality =====
     const modal = document.getElementById("imageModal");
     if (modal) {
         const modalImg = document.getElementById("modalImage");
@@ -131,41 +134,42 @@ document.addEventListener('DOMContentLoaded', function() {
         function openModal(index) {
             const item = portfolioImages[index];
             const img = item.querySelector("img");
-            modal.classList.add("show");
+            modal.style.display = "flex";
             modalImg.src = img.src;
+            modalImg.alt = img.alt; // Preserve alt text
             captionText.innerHTML = item.querySelector(".portfolio-overlay h3").textContent + 
                                   " - " + 
                                   item.querySelector(".portfolio-overlay p").textContent;
             document.body.style.overflow = "hidden";
+            document.body.style.position = "fixed"; // Prevent scrolling
             currentImageIndex = index;
+            
+            // Add animation class
+            modal.classList.add("show");
         }
-
-        // Open modal when clicking on a portfolio image
-        portfolioItems.forEach((item, index) => {
-            const img = item.querySelector("img");
-            img.style.cursor = "pointer"; // Add pointer cursor to indicate clickability
-            
-            img.addEventListener("click", (e) => {
-                e.preventDefault();
-                openModal(index);
-            });
-            
-            // Also make the overlay clickable
-            const overlay = item.querySelector(".portfolio-overlay");
-            if (overlay) {
-                overlay.style.cursor = "pointer";
-                overlay.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    openModal(index);
-                });
-            }
-        });
 
         // Close modal
         function closeModal() {
             modal.classList.remove("show");
-            document.body.style.overflow = "auto";
+            setTimeout(() => {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+                document.body.style.position = "static";
+            }, 300); // Match this with your CSS transition duration
         }
+
+        // Open modal when clicking on any part of the portfolio item
+        portfolioItems.forEach((item, index) => {
+            item.style.cursor = "pointer";
+            
+            item.addEventListener("click", (e) => {
+                // Don't open if clicking on a link inside the item
+                if (e.target.tagName === 'A') return;
+                
+                e.preventDefault();
+                openModal(index);
+            });
+        });
 
         closeBtn.addEventListener("click", closeModal);
 
@@ -191,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Keyboard navigation
         document.addEventListener("keydown", (e) => {
-            if (modal.classList.contains("show")) {
+            if (modal.style.display === "flex") {
                 if (e.key === "ArrowLeft") {
                     currentImageIndex = (currentImageIndex - 1 + portfolioImages.length) % portfolioImages.length;
                     updateModalImage();
@@ -208,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const item = portfolioImages[currentImageIndex];
             const img = item.querySelector("img");
             modalImg.src = img.src;
+            modalImg.alt = img.alt;
             captionText.innerHTML = item.querySelector(".portfolio-overlay h3").textContent + 
                                   " - " + 
                                   item.querySelector(".portfolio-overlay p").textContent;
